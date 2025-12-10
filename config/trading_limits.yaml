@@ -1,0 +1,85 @@
+# HARD-CODED SAFETY LIMITS
+# ⚠️ THESE CANNOT BE OVERRIDDEN BY ANY CONFIGURATION
+# These are absolute maximum limits to prevent catastrophic losses
+
+ABSOLUTE_LIMITS:
+  # Order Value Limits
+  MAX_SINGLE_ORDER_VALUE: 10000      # ₹10,000 - No single order can exceed this
+  MAX_DAILY_ORDERS: 15               # Maximum 15 orders per trading day
+
+  # Portfolio Limits
+  MAX_PORTFOLIO_VALUE: 50000         # ₹50,000 - Hard cap on total portfolio value
+  MAX_DAILY_LOSS_HARD: 5000          # ₹5,000 - Absolute kill switch trigger
+  MIN_ACCOUNT_BALANCE: 5000          # ₹5,000 - Don't trade if balance below this
+
+  # Exchange and Product Restrictions
+  ALLOWED_EXCHANGES:
+    - "NSE"
+    - "BSE"
+
+  FORBIDDEN_SEGMENTS:
+    - "FNO"  # No Futures & Options in Phase 1
+
+  FORBIDDEN_PRODUCTS:
+    - "MIS"  # No Margin/Intraday trading initially
+    - "NRML"  # No Normal (F&O) product
+
+# Kill Switch Activation Conditions
+# ANY of these conditions will trigger an immediate trading halt
+KILL_SWITCH_CONDITIONS:
+  - type: "daily_loss_exceeds_hard_limit"
+    description: "Daily loss exceeds ₹5,000 hard limit"
+
+  - type: "consecutive_losses_gt_5"
+    description: "5 or more consecutive losing trades"
+
+  - type: "api_error_rate_gt_30_percent"
+    description: "API error rate exceeds 30% over 10 requests"
+
+  - type: "network_failure_duration_gt_60_seconds"
+    description: "Network connectivity lost for more than 60 seconds"
+
+  - type: "manual_emergency_stop"
+    description: "Manual emergency stop triggered by user"
+
+# Recovery Protocol (after kill switch activation)
+RECOVERY_PROTOCOL:
+  require_manual_restart: true       # Cannot auto-restart
+  require_admin_approval: true       # Needs admin approval code
+  cooldown_period_minutes: 60        # Must wait 60 minutes before restart
+  approval_code: "EMERGENCY_RESTART_APPROVED"  # Required code for restart
+
+  # What happens during recovery
+  actions_on_activation:
+    - "halt_all_new_orders"
+    - "log_critical_event"
+    - "record_system_state"
+    - "notify_admin"  # Phase 2+
+
+  # What must be checked before allowing restart
+  restart_checklist:
+    - "verify_issue_resolved"
+    - "check_account_balance"
+    - "review_recent_trades"
+    - "confirm_system_health"
+    - "get_admin_approval"
+
+# Validation Rules
+VALIDATION_RULES:
+  # Order validation
+  min_order_quantity: 1
+  max_order_quantity: 10000
+
+  # Price validation
+  min_price: 1.0
+  max_price: 100000.0
+
+  # Risk validation
+  max_leverage: 1.0  # No leverage in Phase 1
+
+# Emergency Contacts (Phase 2+)
+# EMERGENCY_CONTACTS:
+#   admin_email: "admin@example.com"
+#   admin_phone: "+91-XXXXXXXXXX"
+#   sms_alerts_enabled: false
+#   email_alerts_enabled: false

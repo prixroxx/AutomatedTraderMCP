@@ -1,0 +1,31 @@
+# Local Configuration Override Template
+# Copy this file to config.local.yaml and customize
+# config.local.yaml is in .gitignore and won't be committed
+
+# This file allows you to override default_config.yaml settings
+# without modifying the version-controlled default configuration
+
+# Example: Override logging level
+# logging:
+#   level: "DEBUG"
+
+# Example: Override risk limits (within hard limits)
+# risk:
+#   max_portfolio_value: 30000  # Lower than default 50k
+#   max_position_size: 3000     # Lower than default 5k
+
+# Example: Disable GTT monitoring for testing
+# gtt:
+#   enabled: false
+
+# Example: Change backtesting parameters
+# backtesting:
+#   initial_capital: 25000
+#   commission_pct: 0.0015
+
+# Example: Disable news fetching
+# news:
+#   enabled: false
+
+# NOTE: You CANNOT override hard limits from trading_limits.yaml
+# Those are enforced at the code level for safety

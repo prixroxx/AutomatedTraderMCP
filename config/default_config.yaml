@@ -1,0 +1,91 @@
+# Default Configuration for Automated Trading System
+# SAFE FOR VERSION CONTROL - NO CREDENTIALS HERE
+
+app:
+  name: "AutomatedTrader"
+  version: "0.1.0"
+  environment: "development"  # development, paper, production
+
+trading:
+  mode: "paper"  # paper, live - ALWAYS starts in paper mode for safety
+  default_exchange: "NSE"
+  default_segment: "CASH"
+  default_product: "CNC"  # CNC for delivery (safer than MIS margin)
+  order_validity: "DAY"
+
+# CONSERVATIVE RISK LIMITS (₹50k portfolio approach)
+risk:
+  max_portfolio_value: 50000     # ₹50,000 total portfolio value
+  max_position_size: 5000        # ₹5,000 maximum per position
+  max_daily_loss: 2000           # ₹2,000 daily loss limit (triggers warning)
+  max_open_positions: 3          # Maximum 3 concurrent positions
+  position_size_pct: 0.02        # 2% of portfolio per trade
+  stop_loss_pct: 0.02            # 2% stop loss
+  take_profit_pct: 0.06          # 6% take profit target
+
+# Groww API Configuration
+api:
+  groww:
+    base_url: "https://api.groww.in"
+    timeout: 30
+    retry_attempts: 3
+    retry_delay: 1
+
+  # Conservative rate limits (below API maximums for safety)
+  rate_limits:
+    orders_per_second: 10        # API allows 15, we use 10
+    live_data_per_second: 8      # API allows 10, we use 8
+    non_trading_per_second: 15   # API allows 20, we use 15
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "json"  # json, text
+  console: true
+  file: true
+  rotation: "daily"
+  retention_days: 90
+  log_dir: "data/logs"
+
+# Data Management
+data:
+  cache_enabled: true
+  cache_ttl_seconds: 300  # 5 minutes for market data
+  cache_dir: "data/cache"
+  historical_data_path: "data/cache/historical"
+
+# GTT (Good Till Triggered) Configuration
+gtt:
+  enabled: true
+  monitor_interval_seconds: 30   # Check prices every 30 seconds
+  max_active_gtt: 10             # Maximum active GTT orders
+  database_path: "data/gtt_orders.db"
+
+# Backtesting Configuration
+backtesting:
+  default_start_date: "2024-01-01"
+  default_end_date: "2024-12-31"
+  initial_capital: 50000         # ₹50,000 for conservative testing
+  commission_pct: 0.001          # 0.1% per trade
+  slippage_pct: 0.0005           # 0.05% slippage
+  results_dir: "data/backtest_results"
+
+# News Configuration (Free RSS feeds)
+news:
+  enabled: true
+  sources:
+    - name: "moneycontrol"
+      url: "https://www.moneycontrol.com/rss/latestnews.xml"
+    - name: "economictimes"
+      url: "https://economictimes.indiatimes.com/rssfeedstopstories.cms"
+    - name: "business_standard"
+      url: "https://www.business-standard.com/rss/home_page_top_stories.rss"
+  fetch_interval_seconds: 300    # Fetch every 5 minutes
+  cache_ttl_seconds: 600         # Cache for 10 minutes
+
+# MCP Server Configuration
+mcp:
+  server_name: "trader-mcp"
+  server_version: "0.1.0"
+  max_concurrent_requests: 5
+  port: 8000
