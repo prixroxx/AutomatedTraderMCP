@@ -391,5 +391,7 @@ This software is provided "as is" without warranty of any kind. Trading involves
 ---
 
 **Components**: Configuration, API Client, Risk Management, GTT System, MCP Server (32 tools), Backtesting, News, CLI, Tests
+
 **Safety**: Paper Mode Enforced 🛡️
+
 **Production Ready**: Yes - Ready for paper trading and testing
